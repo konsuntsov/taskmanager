@@ -52,4 +52,16 @@ class Project extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Task::className(), ['projectId' => 'id']);
     }
+    /**
+     * Получить массив проектов в формате [id => name]
+     * @return array
+     */
+    public static function getList(): array {
+        $list = [];
+        $models = Project::find()->orderBy('id')->all();
+        foreach($models as $model) {
+            $list[$model->id] = $model->id.' - '.$model->name;
+        }
+        return $list;
+    }
 }

@@ -6,6 +6,11 @@ use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TaskSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $projects array */
+/* @var $types array */
+/* @var $users array */
+/* @var $priorities array */
+/* @var $statuses array */
 
 $this->title = 'Tasks';
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,27 +23,52 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Task', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php Pjax::begin(); ?>    
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+        'columns' => [            
 
             'id',
-            'projectId',
-            'typeId',
-            'priority',
-            'authorId',
-            //'executorId',
-            //'status',
-            //'name',
-            //'dateStart',
-            //'content',
-            //'dateEnd',
-            //'dateLimit',
+            [
+                'attribute' => 'projectId',
+                'value' => function(app\models\Task $model) {
+                    return $model->project->name;
+                },
+                'filter' => $projects
+            ],
+            [
+                'attribute' => 'typeId',
+                'value' => function(app\models\Task $model) {
+                    return $model->type->name;
+                }
+            ],            
+            [
+                'attribute' => 'priority',
+                'value' => function(app\models\Task $model)  use($priorities) {
+                    return $priorities[$model->priority];
+                },
+                'filter' => $priorities
+            ],
+            [
+                'attribute' => 'authorId',
+                'value' => function(app\models\Task $model) {
+                    return $model->author->surname.' '.$model->author->name;
+                }
+            ],
+            [
+                'attribute' => 'executorId',
+                'value' => function(app\models\Task $model) {
+                    return $model->executor->surname.' '.$model->executor->name;
+                }
+            ],            
+            'status',
+            'name',
+            'dateStart',
+            'content',
+            'dateEnd',
+            'dateLimit',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

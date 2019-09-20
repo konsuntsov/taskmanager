@@ -5,6 +5,9 @@ namespace app\controllers;
 use Yii;
 use app\models\Task;
 use app\models\TaskSearch;
+use app\models\Project;
+use app\models\TaskType;
+use app\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -41,6 +44,11 @@ class TaskController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'projects' => Project::getList(),
+            'types' => TaskType::getList(),
+            'users' => User::getList(),
+            'priorities' => Task::getPriorityList(),
+            'statuses' => Task::getStatusList()
         ]);
     }
 
@@ -65,13 +73,20 @@ class TaskController extends Controller
     public function actionCreate()
     {
         $model = new Task();
+        $model->authorId = Yii::$app->user->getId();
+        $model->dateStart = date('Y-m-d H:i:s');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
+        return $this->render('form', [
             'model' => $model,
+            'projects' => Project::getList(),
+            'types' => TaskType::getList(),
+            'users' => User::getList(),
+            'priorities' => Task::getPriorityList(),
+            'statuses' => Task::getStatusList()
         ]);
     }
 
@@ -90,7 +105,7 @@ class TaskController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render('form', [
             'model' => $model,
         ]);
     }

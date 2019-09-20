@@ -11,7 +11,7 @@ $this->title = 'My Yii Application';
     </div>
     <p><?= Html::a('Типы задач', ['task-type/'], ['class' => 'btn btn-lg btn-success']); ?></p>
     <p><?= Html::a('Проекты', ['project/'], ['class' => 'btn btn-lg btn-success']); ?></p>
-    <p><?= Html::a('Пользователи', ['users/'], ['class' => 'btn btn-lg btn-success']); ?></p>
+    <p><?= Html::a('Пользователи', ['user/'], ['class' => 'btn btn-lg btn-success']); ?></p>
     <p><?= Html::a('Задачи', ['task/'], ['class' => 'btn btn-lg btn-success']); ?></p>
     
 </div>

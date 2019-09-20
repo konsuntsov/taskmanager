@@ -20,13 +20,45 @@ use Yii;
  * @property string $dateEnd дата конца
  * @property string $dateLimit контрольная дата
  *
- * @property Users $author
- * @property Users $executor
- * @property Project $project
- * @property TaskType $type
+ * @property User $author автор
+ * @property User $executor исполнитель
+ * @property Project $project проект
+ * @property TaskType $type тип
  */
 class Task extends \yii\db\ActiveRecord
 {
+    /**
+     * Высокий приоритет
+     */
+    const PRIORITY_HIGH = 3;
+    /**
+     * Средний приоритет
+     */
+    const PRIORITY_NORMAL = 2;
+    /**
+     * Низкий приоритет
+     */
+    const PRIORITY_LOW = 1;
+    /**
+     * Статус в ожидании
+     */
+    const STATUS_WAIT = 0;
+    /**
+     * Статус в работе
+     */
+    const STATUS_WORK = 1;
+    /**
+     * Статус на проверке
+     */
+    const STATUS_READY = 2;
+    /**
+     * Статус выполнен
+     */
+    const STATUS_DONE = 3;
+    /**
+     * Статус отказа
+     */
+    const STATUS_REJECT = 4;
     /**
      * {@inheritdoc}
      */
@@ -46,8 +78,8 @@ class Task extends \yii\db\ActiveRecord
             [['dateStart', 'dateEnd', 'dateLimit'], 'safe'],
             [['name'], 'string', 'max' => 100],
             [['content'], 'string', 'max' => 2000],
-            [['authorId'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['authorId' => 'id']],
-            [['executorId'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executorId' => 'id']],
+            [['authorId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['authorId' => 'id']],
+            [['executorId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executorId' => 'id']],
             [['projectId'], 'exist', 'skipOnError' => true, 'targetClass' => Project::className(), 'targetAttribute' => ['projectId' => 'id']],
             [['typeId'], 'exist', 'skipOnError' => true, 'targetClass' => TaskType::className(), 'targetAttribute' => ['typeId' => 'id']],
         ];
@@ -60,17 +92,17 @@ class Task extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'Индетификатор',
-            'projectId' => 'идентификатор проекта',
-            'typeId' => 'идентификатор типа',
+            'projectId' => 'Проект',
+            'typeId' => 'Тип',
             'priority' => 'приоритет',
-            'authorId' => 'идентификатор автора',
-            'executorId' => 'идентификатор исполнителя',
-            'status' => 'статус',
-            'name' => 'название',
-            'dateStart' => 'время начала',
-            'content' => 'содержимое',
-            'dateEnd' => 'дата конца',
-            'dateLimit' => 'контрольная дата',
+            'authorId' => 'Автор',
+            'executorId' => 'Исполнитель',
+            'status' => 'Статус',
+            'name' => 'Название',
+            'dateStart' => 'Начало',
+            'content' => 'Содержимое',
+            'dateEnd' => 'Конец',
+            'dateLimit' => 'Срок',
         ];
     }
 
@@ -79,7 +111,7 @@ class Task extends \yii\db\ActiveRecord
      */
     public function getAuthor()
     {
-        return $this->hasOne(Users::className(), ['id' => 'authorId']);
+        return $this->hasOne(User::className(), ['id' => 'authorId']);
     }
 
     /**
@@ -87,7 +119,7 @@ class Task extends \yii\db\ActiveRecord
      */
     public function getExecutor()
     {
-        return $this->hasOne(Users::className(), ['id' => 'executorId']);
+        return $this->hasOne(User::className(), ['id' => 'executorId']);
     }
 
     /**
@@ -104,5 +136,29 @@ class Task extends \yii\db\ActiveRecord
     public function getType()
     {
         return $this->hasOne(TaskType::className(), ['id' => 'typeId']);
+    }
+    /**
+     * Получить перечень приорететов
+     * @return array
+     */
+    public static function getPriorityList(): array {
+        return [
+            self::PRIORITY_HIGH => 'Высокий', 
+            self::PRIORITY_NORMAL => 'Нормальный', 
+            self::PRIORITY_LOW => 'Низкий'
+        ];
+    }
+    /**
+     * Получить перечень статусов
+     * @return array
+     */
+    public static function getStatusList(): array {
+        return [
+            self::STATUS_WAIT => 'В ожидании',
+            self::STATUS_WORK => 'В работе',
+            self::STATUS_READY => 'На проверке',
+            self::STATUS_DONE => 'Выполнен',
+            self::STATUS_REJECT => 'Отказ',
+        ];
     }
 }

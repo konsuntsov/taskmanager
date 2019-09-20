@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -40,8 +39,8 @@ class TaskType extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'идентификатор',
-            'name' => 'наименование',
+            'id' => 'Код',
+            'name' => 'Наименование',
         ];
     }
 
@@ -49,7 +48,7 @@ class TaskType extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getTasks()
-    {
+    {        
         return $this->hasMany(Task::className(), ['typeId' => 'id']);
     }
 }

@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\TaskType;
+use yii\data\Sort;
 
 /**
  * TaskTypeSearch represents the model behind the search form of `app\models\TaskType`.
@@ -43,9 +44,11 @@ class TaskTypeSearch extends TaskType
         $query = TaskType::find();
 
         // add conditions that should always apply here
+        $sort = new Sort(['defaultOrder' => ['id' => SORT_ASC]]);        
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => $sort,
         ]);
 
         $this->load($params);

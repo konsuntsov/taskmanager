@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Project;
+use yii\data\Sort;
 
 /**
  * ProjectSearch represents the model behind the search form of `app\models\Project`.
@@ -43,9 +44,11 @@ class ProjectSearch extends Project
         $query = Project::find();
 
         // add conditions that should always apply here
+        $sort = new Sort(['defaultOrder' => ['id' => SORT_ASC]]);        
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => $sort,
         ]);
 
         $this->load($params);
